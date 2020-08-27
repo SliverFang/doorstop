@@ -1,3 +1,3 @@
 # Doorstop REST API
 
-Profiles REST API course code.
+Doorstop api source code.
