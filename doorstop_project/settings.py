@@ -20,10 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'hqm!!4=#k^w%c6$uni3w@2!!va0b=i2(*-(jy+wf)660itgr7s'
+SECRET_KEY = 'hqm!!4=#k  ^w%c6$uni3w@2!!va0b=i2(*-(jy+wf)660itgr7s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(int(os.environ.get('DEBUG',1)))
 
 ALLOWED_HOSTS = []
 
@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'doorstop_api',
     'rest_framework.authtoken',
-    
+
 ]
 
 MIDDLEWARE = [
@@ -124,3 +124,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'doorstop_api.UserProfile'
+
+STATIC_ROOT = 'static/'
