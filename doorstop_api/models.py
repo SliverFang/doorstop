@@ -23,7 +23,6 @@ class UserProfileManager(BaseUserManager):
         user = self.create_user(phone,email,name,password)
 
         user.is_superuser= True
-        user.is_staff=True
         user.save(using=self._db)
 
         return user
@@ -37,7 +36,6 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     phone = models.CharField(max_length=10,unique=True)
 
     """Used internally by Django"""
-    is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     """flag for workers to be included later"""
@@ -46,7 +44,7 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     objects = UserProfileManager()
 
     USERNAME_FIELD = 'phone'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['email','name']
 
     def __str__(self):
         """Return string representation of our user"""

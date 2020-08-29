@@ -10,15 +10,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.UserProfile
-        fields = ('id','email','name','password','phone','address','is_staff')
+        fields = ('id','email','name','password','phone','address')
         extra_kwargs = {
             'password':{
                 'write_only':True,
                 'style':{'input_type':'password'}
-            },
-            'is_staff':
-            {
-                'read_only':True,
             }
         }
     
@@ -36,7 +32,7 @@ class UserProfileAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.UserProfile
-        fields = ('id','email','name','password','phone','address','is_worker','is_staff')
+        fields = ('id','email','name','password','phone','address','is_worker')
         extra_kwargs = {
             'password':{
                 'write_only':True,
