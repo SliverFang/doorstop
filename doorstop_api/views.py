@@ -63,4 +63,15 @@ class checkUserExist(APIView):
             return Response({'response':True})
         else:
             return Response({'response':False})
+
+class getUserDetails(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.UpdateOwnData,IsAuthenticated,)
+    def post(self,request,format=None):
+        pdata = request.data['phone']
+        user = models.UserProfile.objects.filter(phone=pdata)
+        if(user):
+            return Response({'id':user[0].id,'phone':user[0].phone,'email':user[0].email,'address':user[0].address,'is_worker':user[0].is_worker,'is_staff':user[0].is_staff})
+        else:
+            return Response({'response':False})
     

@@ -8,6 +8,7 @@ router.register('admin_user',views.UserProfileAdminViewSet)
 
 urlpatterns = [
     path('hello-view/',views.HelloApiView.as_view()),
+    path('getUserDetails/',views.getUserDetails.as_view()),
     path('checkUserExist/',views.checkUserExist.as_view()),
     path('login/',views.UserLoginApiView.as_view()),
     path('',include(router.urls))
