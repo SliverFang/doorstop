@@ -53,4 +53,14 @@ class UserProfileAdminViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AdminOnlyApi,IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('phone','email',)
+
+class checkUserExist(APIView):
+    
+    def post(self,request,format=None):
+        pdata = request.data['phone']
+        count = models.UserProfile.objects.filter(phone=pdata).count()
+        if(count!=0):
+            return Response({'response':True})
+        else:
+            return Response({'response':False})
     
