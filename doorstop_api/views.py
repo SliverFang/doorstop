@@ -50,7 +50,7 @@ class UserProfileAdminViewSet(viewsets.ModelViewSet):
     serializer_class= serializers.UserProfileAdminSerializer
     queryset = models.UserProfile.objects.all()
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (permissions.AdminOnlyApi,)
+    permission_classes = (permissions.AdminOnlyApi,IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('phone','email',)
     

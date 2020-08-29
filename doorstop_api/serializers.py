@@ -32,7 +32,7 @@ class UserProfileAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.UserProfile
-        fields = ('id','email','name','password','phone','address','is_worker')
+        fields = ('id','email','name','password','phone','address','is_worker','is_superuser')
         extra_kwargs = {
             'password':{
                 'write_only':True,
