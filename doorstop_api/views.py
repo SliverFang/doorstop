@@ -71,7 +71,7 @@ class getUserDetails(APIView):
         pdata = request.data['phone']
         user = models.UserProfile.objects.filter(phone=pdata)
         if(user):
-            return Response({'id':user[0].id,'phone':user[0].phone,'email':user[0].email,'address':user[0].address,'is_worker':user[0].is_worker,'is_staff':user[0].is_staff})
+            return Response({'id':user[0].id,'phone':user[0].phone,'name':user[0].name,'email':user[0].email,'address':user[0].address,'is_worker':user[0].is_worker,'is_staff':user[0].is_staff})
         else:
             return Response({'response':False})
     
