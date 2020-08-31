@@ -52,7 +52,19 @@ class UserProfileAdminSerializer(serializers.ModelSerializer):
         )
         return user
 
-
-
-
-
+class AddressObjectSerializer(serializers.ModelSerializer):
+    """Serialises addressObject"""
+    alternate_phone=serializers.CharField(required=False)
+    landmark=serializers.CharField(required=False)
+    is_home=serializers.BooleanField(required=False)
+    class Meta:
+        model = models.addressObject
+        
+        fields = ('id','user_profile','pincode','house_no_building_no'
+        ,'road_name_area_colony','city','state','landmark'
+        ,'name','phone','alternate_phone','is_home')
+        extra_kwargs = {
+            'user_profile':{
+                'read_only':True
+            }
+        }

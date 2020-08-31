@@ -3,10 +3,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 from django.contrib.auth.models import User
-
 from django.core.exceptions import PermissionDenied
 
-
+from django.http import JsonResponse
 from doorstop_api import serializers
 from doorstop_api import models
 from doorstop_api import permissions
@@ -75,3 +74,30 @@ class getUserDetails(APIView):
         else:
             return Response({'response':False})
     
+class UserProfileAddressViewSet(viewsets.ModelViewSet):
+    """Handles creating,reading and updating profile feed items"""
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (
+        permissions.UpdateOwnData,
+        IsAuthenticated,
+        )
+    serializer_class = serializers.AddressObjectSerializer
+    queryset = models.addressObject.objects.all()
+
+    def perform_create(self,serializer):
+        """sets the user profile to the loged in user"""
+        """gets called every time a http post is called"""
+        serializer.save(user_profile=self.request.user)
+
+class getUserAllAddresses(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    def get(self,request,format=None):
+        data=request.user.all_addresses.all()
+        l=[]
+        for ao in data.iterator():
+            l.append({'id':ao.id,'pincode':ao.pincode,'house_no_building_no':ao.house_no_building_no
+            ,'road_name_area_colony':ao.road_name_area_colony,'city':ao.city,'state':ao.state,'landmark':ao.landmark
+            ,'name':ao.name,'phone':ao.phone,'alternate_phone':ao.alternate_phone,'is_home':ao.is_home})
+        return JsonResponse(l, safe=False)
+        
