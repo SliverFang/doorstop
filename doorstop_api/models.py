@@ -65,10 +65,10 @@ class addressObject(models.Model):
     road_name_area_colony=models.CharField(max_length=250,blank=False,null=False)
     city=models.CharField(max_length=250,blank=False,null=False)
     state=models.CharField(max_length=250,blank=False,null=False)
-    landmark=models.CharField(max_length=250)
+    landmark=models.CharField(max_length=250,blank=True,null=True)
     name=models.CharField(max_length=250,blank=False,null=False)
     phone = models.CharField(max_length=10,blank=False,null=False)
-    alternate_phone=models.CharField(max_length=10)
+    alternate_phone=models.CharField(max_length=10,blank=True,null=True)
     is_home=models.BooleanField(default=False)
 
     def _str_self(self):
