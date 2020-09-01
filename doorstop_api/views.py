@@ -90,6 +90,7 @@ class UserProfileAddressViewSet(viewsets.ModelViewSet):
         serializer.save(user_profile=self.request.user)
 
 class getUserAllAddresses(APIView):
+    """Api to return details of addresses of all user"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     def get(self,request,format=None):

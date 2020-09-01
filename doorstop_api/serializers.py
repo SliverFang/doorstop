@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from doorstop_api import models
+from django.contrib.auth.hashers import make_password
 
 class HelloSerializer(serializers.Serializer):
     """Serializes a name field for testing our APIView"""
@@ -21,15 +22,26 @@ class UserProfileSerializer(serializers.ModelSerializer):
                 'read_only':True
             }
         }
-    
     def create(self,validated_data):
         """create and return a new user"""
         user = models.UserProfile.objects.create_user(
             password=validated_data['password'],
             phone = validated_data['phone']
         )
-
         return user
+    
+    def update(self,instance, validated_data):
+        if 'password' in validated_data:
+            instance.password= make_password(validated_data['password'])
+        if 'email' in validated_data:
+            instance.email=validated_data['email']
+        if 'phone' in validated_data:
+            instance.phone=validated_data['phone']
+        if 'name' in validated_data:
+            instance.name=validated_data['name']
+        instance.save()
+        return instance
+
 
 class UserProfileAdminSerializer(serializers.ModelSerializer):
     """Serializer for admin api for user management"""
