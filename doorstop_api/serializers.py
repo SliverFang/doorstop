@@ -66,8 +66,8 @@ class UserProfileAdminSerializer(serializers.ModelSerializer):
 
 class AddressObjectSerializer(serializers.ModelSerializer):
     """Serialises addressObject"""
-    alternate_phone=serializers.CharField(required=False)
-    landmark=serializers.CharField(required=False)
+    alternate_phone=serializers.CharField(required=False,allow_blank=True,allow_null=True)
+    landmark=serializers.CharField(required=False,allow_blank=True,allow_null=True)
     is_home=serializers.BooleanField(required=False)
     class Meta:
         model = models.addressObject
