@@ -78,7 +78,7 @@ class UserProfileAddressViewSet(viewsets.ModelViewSet):
     """Handles creating,reading and updating profile feed items"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (
-        permissions.UpdateOwnData,
+        permissions.UpdateOwnAddress,
         IsAuthenticated,
         )
     serializer_class = serializers.AddressObjectSerializer
