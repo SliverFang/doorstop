@@ -86,3 +86,53 @@ class addressObject(models.Model):
             phone = self.phone,
             alternate_phone=self.alternate_phone,
             is_home=self.is_home)
+
+class Cuisine(models.Model):
+    "cuisine objects"
+    name=models.CharField(max_length=250,blank=False,null=False,unique=True)
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
+class Food(models.Model):
+    """Food Objects"""
+    category_choices = [
+    ('veg', 'veg'),
+    ('non-veg', 'non-veg')]
+
+    name=models.CharField(max_length=250,blank=False,null=False,unique=True)
+    description=models.CharField(max_length=500,blank=False,null=False)
+    photo=models.ImageField(upload_to='foods')
+    category=models.CharField(max_length=10,choices=category_choices,blank=False,null=False)
+    cuisine=models.ManyToManyField(Cuisine)
+
+    def __str__(self):
+        return self.name
+
+class Resturant(models.Model):
+    """Resturant objects"""
+    name=models.CharField(max_length=250,blank=False,null=False)
+    pincode=models.CharField(max_length=6,blank=False,null=False)
+    address=models.CharField(max_length=1000,blank=False,null=False)
+    foods=models.ManyToManyField(Food,through="ResturantFood")
+
+    def __str__(self):
+        return self.name
+
+class ResturantFood(models.Model):
+    """Describes the relation between each resturant and each they offer"""
+    class Meta:
+        unique_together = (('food', 'resturant'),)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    resturant = models.ForeignKey(Resturant, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return self.resturant.name+" "+self.food.name
+
+
+
+

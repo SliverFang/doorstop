@@ -129,3 +129,5 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'doorstop_api.UserProfile'
 
 STATIC_ROOT = 'static/'
+
+MEDIA_URL = '/media/'
