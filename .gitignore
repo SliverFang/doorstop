@@ -10,6 +10,10 @@ __pycache__/
 # C extensions
 *.so
 
+# media directories
+media/
+foods/
+
 # Distribution / packaging
 .Python
 build/
