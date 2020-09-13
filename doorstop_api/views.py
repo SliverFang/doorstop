@@ -48,7 +48,7 @@ class UserProfileAdminViewSet(viewsets.ModelViewSet):
 class CheckUserExist(APIView):
     
     def post(self,request,format=None):
-        pdata = request.data['phone']
+        pdata = request.data.get('phone',"")
         count = models.UserProfile.objects.filter(phone=pdata).count()
         if(count!=0):
             return Response({'response':True})
@@ -59,7 +59,7 @@ class GetUserDetails(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.UpdateOwnData,IsAuthenticated,)
     def post(self,request,format=None):
-        pdata = request.POST.get('phone',"")
+        pdata = request.data.get('phone',"")
         user = models.UserProfile.objects.filter(phone=pdata)
         if(user):
             return Response({'id':user[0].id,'phone':user[0].phone,'name':user[0].name,'email':user[0].email,'address':user[0].address,'is_worker':user[0].is_worker,'is_staff':user[0].is_staff})
