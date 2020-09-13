@@ -64,7 +64,7 @@ class GetUserDetails(APIView):
         if(user):
             return Response({'id':user[0].id,'phone':user[0].phone,'name':user[0].name,'email':user[0].email,'address':user[0].address,'is_worker':user[0].is_worker,'is_staff':user[0].is_staff})
         else:
-            return Response({'response':False})
+            return Response({'response':pdata})
     
 class UserProfileAddressViewSet(viewsets.ModelViewSet):
     """Handles creating,reading and updating profile feed items"""
