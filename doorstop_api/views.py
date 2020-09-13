@@ -20,14 +20,6 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 
 
-# Create your views here.
-
-class HelloApiView(APIView):
-    """test"""
-    def get(self,request,format=None):
-        """returns a list of APIView features"""
-        return Response({'message':'Hello','data':'ohyeah'})
-
 class UserProfileViewSet(viewsets.ModelViewSet):
     """Handle creating and updating profiles"""
     serializer_class= serializers.UserProfileSerializer
@@ -51,9 +43,9 @@ class UserProfileAdminViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.AdminOnlyApi,IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('phone','email',)
+    search_fields = ('phone',)
 
-class checkUserExist(APIView):
+class CheckUserExist(APIView):
     
     def post(self,request,format=None):
         pdata = request.data['phone']
@@ -63,7 +55,7 @@ class checkUserExist(APIView):
         else:
             return Response({'response':False})
 
-class getUserDetails(APIView):
+class GetUserDetails(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.UpdateOwnData,IsAuthenticated,)
     def post(self,request,format=None):
@@ -82,14 +74,14 @@ class UserProfileAddressViewSet(viewsets.ModelViewSet):
         IsAuthenticated,
         )
     serializer_class = serializers.AddressObjectSerializer
-    queryset = models.addressObject.objects.all()
+    queryset = models.Address.objects.all()
 
     def perform_create(self,serializer):
         """sets the user profile to the loged in user"""
         """gets called every time a http post is called"""
         serializer.save(user_profile=self.request.user)
 
-class getUserAllAddresses(APIView):
+class GetUserAllAddresses(APIView):
     """Api to return details of addresses of all user"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
@@ -102,3 +94,90 @@ class getUserAllAddresses(APIView):
             ,'name':ao.name,'phone':ao.phone,'alternate_phone':ao.alternate_phone,'is_home':ao.is_home})
         return JsonResponse(l, safe=False)
         
+
+class SearchDatabase(APIView):
+    """Api to return details of addresses of all user"""
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    def get(self,request,format=None):
+        query=request.data['query']
+        if(query is None):
+            return Response({})
+
+        l=[]
+        cuisine = models.Cuisine.objects.filter(name__contains=query)
+
+        for c in cuisine.iterator():
+            l.append({'id':c.id,'name':c.name})
+        
+        resturants = models.Resturant.objects.filter(name__contains=query)
+
+        for r in resturants.iterator():
+            l.append({'id':r.id,'name':r.name,'photo':r.photo.url})
+
+        foods = models.Food.objects.filter(name__contains=query)
+        
+        for f in foods.iterator():
+            l.append({'id':f.id,'name':f.name,'photo':f.photo.url})
+
+        return JsonResponse(l,safe=False)
+
+class ResturantViewSet(viewsets.ModelViewSet):
+    """Handles creating,reading and updating resturants"""
+    """Listing of all resturants is blocked"""
+    """Permission is only granted to creating users to update their resturants"""
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (
+        permissions.IsResturantOwner,
+        IsAuthenticated,
+        )
+    serializer_class = serializers.ResturantObjectSerializer
+    queryset = models.Resturant.objects.all()
+
+    def post(self, request, format=None):
+        serializer = serializers.ResturantObjectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request):
+        if(request.user.is_staff):
+            resturant_list=models.Resturant.objects.all()
+            serializer = serializers.ResturantObjectSerializer(resturant_list,many=True)
+            return Response(serializer.data)
+        else:
+            raise PermissionDenied()
+        
+
+class CuisineViewSet(viewsets.ModelViewSet):
+    """Handle cuisine objects"""
+    """Viewset is only available to admins"""
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (
+        permissions.AdminOnlyApi,
+        IsAuthenticated,
+        )
+    serializer_class = serializers.CuisineObjectSerializer
+    queryset = models.Cuisine.objects.all()
+
+class FoodViewSet(viewsets.ModelViewSet):
+    """Handles creating,reading and updating foods"""
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (
+        IsAuthenticated,
+        permissions.UpdateAdminOnly,
+        )
+    serializer_class = serializers.FoodObjectSerializer
+    queryset = models.Food.objects.all()
+
+    def post(self, request, format=None):
+        serializer = serializers.ResturantObjectSerializer(data=request.data)
+        cuisine_name= request.POST.get('cuisine')
+        req_cuisine=models.Cuisine.objects.filter(name=cuisine_name)
+        if serializer.is_valid():
+            serializer.save(cuisine=req_cuisine)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

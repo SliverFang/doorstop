@@ -6,12 +6,15 @@ router = DefaultRouter()
 router.register('user',views.UserProfileViewSet)
 router.register('admin_user',views.UserProfileAdminViewSet)
 router.register('address',views.UserProfileAddressViewSet)
+router.register('resturant',views.ResturantViewSet)
+router.register('cuisine',views.CuisineViewSet)
+router.register('food',views.FoodViewSet)
 
 urlpatterns = [
-    path('hello-view/',views.HelloApiView.as_view()),
-    path('getUserDetails/',views.getUserDetails.as_view()),
-    path('checkUserExist/',views.checkUserExist.as_view()),
-    path('getUserAllAddresses/',views.getUserAllAddresses.as_view()),
+    path('getUserDetails/',views.GetUserDetails.as_view()),
+    path('checkUserExist/',views.CheckUserExist.as_view()),
+    path('getUserAllAddresses/',views.GetUserAllAddresses.as_view()),
+    path('search/',views.SearchDatabase.as_view()),
     path('login/',views.UserLoginApiView.as_view()),
     path('',include(router.urls))
 ]

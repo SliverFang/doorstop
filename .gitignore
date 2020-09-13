@@ -14,6 +14,9 @@ __pycache__/
 media/
 foods/
 
+#migrations
+migrations/
+
 # Distribution / packaging
 .Python
 build/

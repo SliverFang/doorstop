@@ -70,7 +70,7 @@ class AddressObjectSerializer(serializers.ModelSerializer):
     landmark=serializers.CharField(required=False,allow_blank=True,allow_null=True)
     is_home=serializers.BooleanField(required=False)
     class Meta:
-        model = models.addressObject
+        model = models.Address
         
         fields = ('id','user_profile','pincode','house_no_building_no'
         ,'road_name_area_colony','city','state','landmark'
@@ -80,3 +80,33 @@ class AddressObjectSerializer(serializers.ModelSerializer):
                 'read_only':True
             }
         }
+
+class ResturantObjectSerializer(serializers.ModelSerializer):
+    """Serialises addressObject"""
+    name=serializers.CharField(required=True,allow_blank=False,allow_null=False)
+    pincode=serializers.CharField(required=True,allow_blank=False,allow_null=False)
+    address=serializers.CharField(required=True,allow_blank=False,allow_null=False)
+    photo=serializers.ImageField(required=False)
+    class Meta:
+        model = models.Resturant
+        fields = ('id','name','pincode','address','photo')
+
+class CuisineObjectSerializer(serializers.ModelSerializer):
+    """Serialises CuisineObject"""
+    name=serializers.CharField(required=True,allow_blank=False,allow_null=False)
+    class Meta:
+        model = models.Cuisine
+        fields = ('id','name')
+
+class FoodObjectSerializer(serializers.ModelSerializer):
+    """Serialises FoodObject"""
+
+    name=serializers.CharField(required=True,allow_blank=False,allow_null=False)
+    description=serializers.CharField(required=True,allow_blank=False,allow_null=False)
+    category=serializers.CharField(source='get_category_choices')
+    photo=serializers.ImageField(required=False)
+
+    class Meta:
+        model = models.Food
+        fields = ('id','name','description','photo','category')
+    

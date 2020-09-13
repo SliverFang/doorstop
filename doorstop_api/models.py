@@ -52,7 +52,7 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
         """Return string representation of our user"""
         return self.phone
 
-class addressObject(models.Model):
+class Address(models.Model):
     """User Address objects"""
     user_profile = models.ForeignKey(
         UserProfile,
@@ -71,8 +71,8 @@ class addressObject(models.Model):
     alternate_phone=models.CharField(max_length=10,blank=True,null=True)
     is_home=models.BooleanField(default=False)
 
-    def _str_self(self):
-        return self.status_text
+    def __str__(self):
+        return self.name
 
     def as_json(self):
         return dict(
@@ -94,9 +94,6 @@ class Cuisine(models.Model):
     def __str__(self):
         return self.name
 
-    def __unicode__(self):
-        return self.name
-
 class Food(models.Model):
     """Food Objects"""
     category_choices = [
@@ -105,9 +102,9 @@ class Food(models.Model):
 
     name=models.CharField(max_length=250,blank=False,null=False,unique=True)
     description=models.CharField(max_length=500,blank=False,null=False)
-    photo=models.ImageField(upload_to='foods')
+    photo=models.ImageField(upload_to='foods',null=True,blank=True)
     category=models.CharField(max_length=10,choices=category_choices,blank=False,null=False)
-    cuisine=models.ManyToManyField(Cuisine)
+    cuisine=models.ForeignKey(Cuisine,on_delete=models.CASCADE,related_name="all_foods",default=1)
 
     def __str__(self):
         return self.name
@@ -118,7 +115,8 @@ class Resturant(models.Model):
     pincode=models.CharField(max_length=6,blank=False,null=False)
     address=models.CharField(max_length=1000,blank=False,null=False)
     foods=models.ManyToManyField(Food,through="ResturantFood")
-
+    photo=models.ImageField(upload_to='resturants',null=True,blank=True)
+    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE,related_name="all_resturants",default=1)
     def __str__(self):
         return self.name
 
@@ -132,7 +130,5 @@ class ResturantFood(models.Model):
 
     def __str__(self):
         return self.resturant.name+" "+self.food.name
-
-
 
 
