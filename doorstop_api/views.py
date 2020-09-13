@@ -59,7 +59,7 @@ class GetUserDetails(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.UpdateOwnData,IsAuthenticated,)
     def post(self,request,format=None):
-        pdata = request.data['phone']
+        pdata = request.POST.get('phone',"")
         user = models.UserProfile.objects.filter(phone=pdata)
         if(user):
             return Response({'id':user[0].id,'phone':user[0].phone,'name':user[0].name,'email':user[0].email,'address':user[0].address,'is_worker':user[0].is_worker,'is_staff':user[0].is_staff})
@@ -181,3 +181,15 @@ class FoodViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class GetResturantsAfterPincodeFilter(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    def post(self,request,format=None):
+        pin = request.data['pincode']
+        list_response=[]
+        resturantslist = models.Resturant.objects.filter(pincode=pin)
+        for resturant in resturantslist.iterator():
+            list_response.append({'name':resturant.name,'pincode':resturant.pincode,'address':resturant.address,'photo':resturant.photo.url,'id':resturant.id})
+        
+        return JsonResponse(list_response,safe=False)

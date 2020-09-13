@@ -16,5 +16,6 @@ urlpatterns = [
     path('getUserAllAddresses/',views.GetUserAllAddresses.as_view()),
     path('search/',views.SearchDatabase.as_view()),
     path('login/',views.UserLoginApiView.as_view()),
+    path('filterResturants/',views.GetResturantsAfterPincodeFilter.as_view()),
     path('',include(router.urls))
 ]
