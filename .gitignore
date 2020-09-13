@@ -13,6 +13,7 @@ __pycache__/
 # media directories
 media/
 foods/
+resturants/
 
 #migrations
 migrations/
