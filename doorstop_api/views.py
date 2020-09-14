@@ -166,7 +166,6 @@ class FoodViewSet(viewsets.ModelViewSet):
     """Handles creating,reading and updating foods"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (
-        IsAuthenticated,
         permissions.UpdateAdminOnly,
         )
     serializer_class = serializers.FoodObjectSerializer
@@ -184,7 +183,6 @@ class FoodViewSet(viewsets.ModelViewSet):
 
 class GetResturantsAfterPincodeFilter(APIView):
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
     def post(self,request,format=None):
         pin = request.data['pincode']
         list_response=[]
