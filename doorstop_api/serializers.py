@@ -103,7 +103,7 @@ class FoodObjectSerializer(serializers.ModelSerializer):
 
     name=serializers.CharField(required=True,allow_blank=False,allow_null=False)
     description=serializers.CharField(required=True,allow_blank=False,allow_null=False)
-    category=serializers.CharField(source='get_category_choices')
+    category=serializers.CharField(source='get_category_display')
     photo=serializers.ImageField(required=False)
 
     class Meta:
