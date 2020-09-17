@@ -191,3 +191,18 @@ class GetResturantsAfterPincodeFilter(APIView):
             list_response.append({'name':resturant.name,'pincode':resturant.pincode,'address':resturant.address,'photo':resturant.photo.url,'id':resturant.id})
         
         return JsonResponse(list_response,safe=False)
+
+class GetRestaurantAllFoods(APIView):
+    """Api to return details of addresses of all user"""
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    def post(self,request,format=None):
+        id_data=request.data['id']
+        restaurant=models.Resturant.objects.filter(id=id_data)
+        l=[]
+        if(restaurant.count()==0):
+            return JsonResponse(l,safe=False)
+        foods=restaurant[0].foods.all()
+        for f in foods:
+            l.append({'name':f.name,'description':f.description,'photo':f.photo.url,'category':f.category,'cuisine':f.cuisine.name})
+        return JsonResponse(l, safe=False)
