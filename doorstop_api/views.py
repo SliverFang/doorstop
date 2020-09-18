@@ -202,5 +202,6 @@ class GetRestaurantAllFoods(APIView):
             return JsonResponse(l,safe=False)
         foods=restaurant[0].foods.all()
         for f in foods:
-            l.append({'name':f.name,'description':f.description,'photo':f.photo.url,'category':f.category,'cuisine':f.cuisine.name})
+            relation=models.ResturantFood.objects.get(food=f,resturant=restaurant[0])
+            l.append({'name':f.name,'description':f.description,'photo':f.photo.url,'category':f.category,'cuisine':f.cuisine.name,'price':relation.price})
         return JsonResponse(l, safe=False)
