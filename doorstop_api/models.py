@@ -130,3 +130,4 @@ class ResturantFood(models.Model):
 
     def __str__(self):
         return self.resturant.name+" "+self.food.name
+

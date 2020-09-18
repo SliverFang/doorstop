@@ -194,8 +194,6 @@ class GetResturantsAfterPincodeFilter(APIView):
 
 class GetRestaurantAllFoods(APIView):
     """Api to return details of addresses of all user"""
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
     def post(self,request,format=None):
         id_data=request.data['id']
         restaurant=models.Resturant.objects.filter(id=id_data)
