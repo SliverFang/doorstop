@@ -18,5 +18,6 @@ urlpatterns = [
     path('login/',views.UserLoginApiView.as_view()),
     path('filterResturants/',views.GetResturantsAfterPincodeFilter.as_view()),
     path('allFoods/',views.GetRestaurantAllFoods.as_view()),
+    path('filterResturantByFoodAndPincode/',views.FilterResturantByFoodAndPincode.as_view()),
     path('',include(router.urls))
 ]

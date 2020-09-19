@@ -205,3 +205,18 @@ class GetRestaurantAllFoods(APIView):
             relation=models.ResturantFood.objects.get(food=f,resturant=restaurant[0])
             l.append({'name':f.name,'description':f.description,'photo':f.photo.url,'category':f.category,'cuisine':f.cuisine.name,'price':relation.price})
         return JsonResponse(l, safe=False)
+
+
+class FilterResturantByFoodAndPincode(APIView):
+    """Api to return details of addresses of all user"""
+    def post(self,request,format=None):
+        id_data=request.data['id']
+        pin=request.data['pincode']
+        food=models.Food.objects.filter(id=id_data)
+        l=[]
+        if(food.count()==0):
+            return JsonResponse(l,safe=False)
+        resturants=food[0].resturant_set.filter(pincode=pin)
+        for resturant in resturants:
+            l.append({'name':resturant.name,'pincode':resturant.pincode,'address':resturant.address,'photo':resturant.photo.url,'id':resturant.id})
+        return JsonResponse(l, safe=False)
