@@ -96,9 +96,7 @@ class GetUserAllAddresses(APIView):
         
 
 class SearchDatabase(APIView):
-    """Api to return details of addresses of all user"""
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    """Api to search database for food and resturants"""
     def get(self,request,format=None):
         query=request.data['query']
         if(query is None):
@@ -113,12 +111,18 @@ class SearchDatabase(APIView):
         resturants = models.Resturant.objects.filter(name__contains=query)
 
         for r in resturants.iterator():
-            l.append({'id':r.id,'name':r.name,'photo':r.photo.url})
-
+            d={'id':r.id,'name':r.name}
+            if r.photo and hasattr(r.photo, 'url'):
+                d['photo']=r.photo.url
+            l.append(d)
+        
         foods = models.Food.objects.filter(name__contains=query)
         
         for f in foods.iterator():
-            l.append({'id':f.id,'name':f.name,'photo':f.photo.url})
+            d={'id':f.id,'name':f.name}
+            if f.photo and hasattr(f.photo, 'url'):
+                d['photo']=f.photo.url
+            l.append(d)
 
         return JsonResponse(l,safe=False)
 
