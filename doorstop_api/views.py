@@ -111,7 +111,7 @@ class SearchDatabase(APIView):
         resturants = models.Resturant.objects.filter(name__contains=query)
 
         for r in resturants.iterator():
-            d={'id':r.id,'name':r.name,'isResturant':True}
+            d={'id':r.id,'name':r.name,'pincode':r.pincode,'address':r.address,'owner':r.owner,'discount':r.discount,'isResturant':True}
             if r.photo and hasattr(r.photo, 'url'):
                 d['photo']=r.photo.url
             l.append(d)
@@ -119,7 +119,7 @@ class SearchDatabase(APIView):
         foods = models.Food.objects.filter(name__contains=query)
         
         for f in foods.iterator():
-            d={'id':f.id,'name':f.name,'isFood':True}
+            d={'id':f.id,'name':f.name,'description':f.description,'category':f.category,'cuisine':f.cuisine,'isFood':True}
             if f.photo and hasattr(f.photo, 'url'):
                 d['photo']=f.photo.url
             l.append(d)
