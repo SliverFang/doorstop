@@ -119,7 +119,7 @@ class SearchDatabase(APIView):
         foods = models.Food.objects.filter(name__contains=query)
         
         for f in foods.iterator():
-            d={'id':f.id,'name':f.name,'description':f.description,'category':f.category,'cuisine':f.cuisine,'isFood':True}
+            d={'id':f.id,'name':f.name,'description':f.description,'category':f.category,'cuisine':f.cuisine.id,'isFood':True}
             if f.photo and hasattr(f.photo, 'url'):
                 d['photo']=f.photo.url
             l.append(d)
