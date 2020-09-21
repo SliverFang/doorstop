@@ -117,6 +117,7 @@ class Resturant(models.Model):
     foods=models.ManyToManyField(Food,through="ResturantFood")
     photo=models.ImageField(upload_to='resturants',null=True,blank=True)
     owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE,related_name="all_resturants",default=1)
+    discount = models.IntegerField(blank=False,null=False,default=0)
     def __str__(self):
         return self.name
 
@@ -130,3 +131,10 @@ class ResturantFood(models.Model):
 
     def __str__(self):
         return self.resturant.name+" "+self.food.name
+
+class FoodOrder(models.Model):
+    """Describes the orders placed under resturant"""
+
+    user=models.ForeignKey(UserProfile,on_delete=models.CASCADE,related_name='all_food_orders')
+    
+    

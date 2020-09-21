@@ -105,10 +105,10 @@ class SearchDatabase(APIView):
             return Response({})
 
         l=[]
-        cuisine = models.Cuisine.objects.filter(name__contains=query)
+        """cuisine = models.Cuisine.objects.filter(name__contains=query)
 
         for c in cuisine.iterator():
-            l.append({'id':c.id,'name':c.name})
+            l.append({'id':c.id,'name':c.name})"""
         
         resturants = models.Resturant.objects.filter(name__contains=query)
 
@@ -188,7 +188,7 @@ class GetResturantsAfterPincodeFilter(APIView):
         list_response=[]
         resturantslist = models.Resturant.objects.filter(pincode=pin)
         for resturant in resturantslist.iterator():
-            list_response.append({'name':resturant.name,'pincode':resturant.pincode,'address':resturant.address,'photo':resturant.photo.url,'id':resturant.id})
+            list_response.append({'name':resturant.name,'pincode':resturant.pincode,'address':resturant.address,'photo':resturant.photo.url,'id':resturant.id,'discount':resturant.discount})
         
         return JsonResponse(list_response,safe=False)
 
@@ -218,5 +218,6 @@ class FilterResturantByFoodAndPincode(APIView):
             return JsonResponse(l,safe=False)
         resturants=food[0].resturant_set.filter(pincode=pin)
         for resturant in resturants:
-            l.append({'name':resturant.name,'pincode':resturant.pincode,'address':resturant.address,'photo':resturant.photo.url,'id':resturant.id})
+            l.append({'name':resturant.name,'pincode':resturant.pincode,'address':resturant.address,'photo':resturant.photo.url,'id':resturant.id,'discount':resturant.discount})
         return JsonResponse(l, safe=False)
+
