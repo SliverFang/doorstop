@@ -98,7 +98,7 @@ class GetUserAllAddresses(APIView):
 class SearchDatabase(APIView):
     """Api to search database for food and resturants"""
     def get(self,request,format=None):
-        query=request.data['query']
+        query=request.GET['query']
         if(query is None):
             return Response({})
 
@@ -119,7 +119,7 @@ class SearchDatabase(APIView):
         foods = models.Food.objects.filter(name__contains=query)
         
         for f in foods.iterator():
-            d={'id':f.id,'name':f.name,'description':f.description,'category':f.category,'cuisine':f.cuisine.id,'isFood':True}
+            d={'id':f.id,'name':f.name,'description':f.description,'category':f.category,'cuisine':f.cuisine.id,'isFood':True,'price':f.price}
             if f.photo and hasattr(f.photo, 'url'):
                 d['photo']=f.photo.url
             l.append(d)
