@@ -9,6 +9,7 @@ router.register('address',views.UserProfileAddressViewSet)
 router.register('resturant',views.ResturantViewSet)
 router.register('cuisine',views.CuisineViewSet)
 router.register('food',views.FoodViewSet)
+router.register('order',views.RestaurantViewSet, basename='food_order')
 
 urlpatterns = [
     path('getUserDetails/',views.GetUserDetails.as_view()),
@@ -19,5 +20,8 @@ urlpatterns = [
     path('filterResturants/',views.GetResturantsAfterPincodeFilter.as_view()),
     path('allFoods/',views.GetRestaurantAllFoods.as_view()),
     path('filterResturantByFoodAndPincode/',views.FilterResturantByFoodAndPincode.as_view()),
+    path('allOrders/', views.all_orders),
+    path('orderCountForFood/<int:food_id>/', views.order_count_for_food),
+    path('orderCountForRestaurant/<int:restaurant_id>/', views.order_count_for_restaurant),
     path('',include(router.urls))
 ]

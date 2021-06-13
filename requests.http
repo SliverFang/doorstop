@@ -1,0 +1,66 @@
+POST /api/getUserDetails/
+Host: 127.0.0.1:8000
+Authorization: token ab8cb3b1dafba64710e2297098425ef0ef076179
+Content-Type: application/json
+
+{
+    "phone": 6202361404
+}
+
+###
+
+GET /api/cuisine/2
+Host: 127.0.0.1:8000
+Authorization: token ab8cb3b1dafba64710e2297098425ef0ef076179
+
+###
+
+GET /api/order/
+Host: 127.0.0.1:8000
+Authorization: token ab8cb3b1dafba64710e2297098425ef0ef076179
+
+###
+
+POST /api/order/
+Host: 127.0.0.1:8000
+Authorization: token ab8cb3b1dafba64710e2297098425ef0ef076179
+Content-Type: application/json
+
+{
+    "data": [
+        {
+            "restaurant_id": 1,
+            "food_id": 1,
+            "quantity": 10
+        },
+        {
+            "restaurant_id": 2,
+            "food_id": 1,
+            "quantity": 20
+        },
+        {
+            "restaurant_id": 2,
+            "food_id": 2,
+            "quantity": 20
+        }
+    ]
+}
+
+###
+
+GET /api/allOrders/
+Host: 127.0.0.1:8000
+Authorization: token ab8cb3b1dafba64710e2297098425ef0ef076179
+
+###
+
+GET /api/orderCountForFood/1/
+Host: 127.0.0.1:8000
+Authorization: token ab8cb3b1dafba64710e2297098425ef0ef076179
+
+###
+
+GET /api/orderCountForRestaurant/2/
+Host: 127.0.0.1:8000
+Authorization: token ab8cb3b1dafba64710e2297098425ef0ef076179
+

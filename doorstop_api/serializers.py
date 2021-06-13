@@ -1,3 +1,4 @@
+from django.db.models import fields
 from rest_framework import serializers
 from doorstop_api import models
 from django.contrib.auth.hashers import make_password
@@ -109,4 +110,33 @@ class FoodObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Food
         fields = ('id','name','description','photo','category')
+
+
+class FoodOrderObjectSerializer(serializers.Serializer):
+    """Serializes FoodOrder Object"""
+    
+    restaurant_id = serializers.IntegerField(required=True,allow_null=False)
+    food_id = serializers.IntegerField(required=True,allow_null=False)
+    quantity = serializers.DecimalField(required=True,allow_null=False,max_digits=10, decimal_places=2)
+
+    def create(self, validated_data):
+        return models.FoodOrder.objects.create(**validated_data)
+
+    def validate(self, data):
+        """check if restaurant and food combination is available or not"""
+
+        try:
+            obj = models.ResturantFood.objects.filter(resturant__id=data['restaurant_id']).filter(food__id=data['food_id'])
+        except:
+            raise Exception("here")
+
+        if obj.count() != 1:
+            raise serializers.ValidationError("the restaurant and food combination is not available")
+        
+        data['restaurant_food'] = obj[0]
+        del data['restaurant_id']
+        del data['food_id']
+
+        return data
+
     

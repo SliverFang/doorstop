@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.conf import settings
+import datetime
 
 
 class UserProfileManager(BaseUserManager):
@@ -136,5 +137,22 @@ class FoodOrder(models.Model):
     """Describes the orders placed under resturant"""
 
     user=models.ForeignKey(UserProfile,on_delete=models.CASCADE,related_name='all_food_orders')
+    restaurant_food=models.ForeignKey(ResturantFood,on_delete=models.SET_NULL,null=True,blank=True)
+    quantity=models.DecimalField(max_digits=10, decimal_places=2)
+    date=models.DateTimeField(default=datetime.datetime.now, blank=True)
+
+    def __str__(self):
+        return self.restaurant_food.resturant.name + " " + self.restaurant_food.food.name + " " + self.quantity * self.restaurant_food.price
+
+    def as_json(self):
+        return dict(
+            id = self.id,
+            date = self.date,
+            restaurant_name = self.restaurant_food.resturant.name,
+            food_name = self.restaurant_food.food.name,
+            quantity = self.quantity,
+            price = self.quantity * self.restaurant_food.price,
+        )
+
     
     

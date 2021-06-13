@@ -19,6 +19,9 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+import traceback
+
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     """Handle creating and updating profiles"""
@@ -224,4 +227,83 @@ class FilterResturantByFoodAndPincode(APIView):
         for resturant in resturants:
             l.append({'name':resturant.name,'pincode':resturant.pincode,'address':resturant.address,'photo':resturant.photo.url,'id':resturant.id,'discount':resturant.discount})
         return JsonResponse(l, safe=False)
+
+
+class RestaurantViewSet(viewsets.ViewSet):
+    """api to manage orders"""
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def retrieve(self, request, pk=None):
+        """retrieve a specific order"""
+        try:
+            queryset = models.FoodOrder.objects.get(pk=pk)
+            serializer = serializers.FoodObjectSerializer(data=queryset)
+            if serializer.is_valid():
+                return JsonResponse(serializer.data)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request):
+        """retrieve list of all orders pertatining to the current user"""
+
+        queryset = [elem.as_json() for elem in models.FoodOrder.objects.all()]
+        return JsonResponse(queryset, safe=False)
+
+    def create(self, request):
+        """save a list of orders placed by the current user"""
+
+        food_order_serializer = serializers.FoodOrderObjectSerializer(data=request.data['data'], many=True)
+
+        if food_order_serializer.is_valid():
+            food_order_serializer.save(user=request.user)
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(food_order_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated,])
+@authentication_classes([TokenAuthentication,])
+def order_count_for_restaurant(request, restaurant_id):
+    """ fetches orders of current user done to a particular restaurant """
+    
+    try:
+        queryset = models.FoodOrder.objects.filter(user=request.user, restaurant_food__resturant__id=restaurant_id).count()
+
+        return JsonResponse({"count": queryset}, status=status.HTTP_200_OK)
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated,])
+@authentication_classes([TokenAuthentication,])
+def order_count_for_food(request, food_id):
+    """ fetches orders of current user done to a particular restaurant """
+    
+    try:
+        queryset = models.FoodOrder.objects.filter(user=request.user,restaurant_food__food__id=food_id).count()
+
+        return JsonResponse({"count": queryset}, status=status.HTTP_200_OK)
+    except Exception as exp:
+        return Response(traceback.format_exc(), status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication,])
+@permission_classes([permissions.AdminOnlyApi,IsAuthenticated,])
+def all_orders(request):
+    """ fetches all the orders so far """
+
+    try:
+        queryset = models.FoodOrder.objects.all()
+        queryset = [elem.as_json() for elem in queryset]
+
+        return JsonResponse(queryset, status=status.HTTP_200_OK, safe=False)
+    except Exception as exp:
+        return Response(str(exp),status=status.HTTP_400_BAD_REQUEST)
 
